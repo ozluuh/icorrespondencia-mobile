@@ -1,25 +1,22 @@
 import React, { useState } from 'react';
-import { Alert, Text } from 'react-native';
+import { Text } from 'react-native';
 import CheckBox from 'react-native-check-box';
 import { v4 as uuid } from 'uuid';
 import Button from '../components/Button';
 import InputText from '../components/InputText';
 import Layout from '../components/Layout';
-import { setItem } from '../utils/storage';
+import { FIRST_ACCESS_KEY, LAST_UPDATE_KEY, USERID_LOGGED_KEY, USERS_KEY } from '../config/keys';
+import { showMessage, showValidationMessage } from '../utils/message';
+import { getObject, store } from '../utils/storage';
 
 export default function SignUp({ navigation }) {
-  const KEY = 'USER';
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [alwaysLogged, setAlwaysLogged] = useState(false);
 
-  const showValidationMessage = body => {
-    Alert.alert('Campo obrigatório não preenchido', body);
-  };
-
-  const register = () => {
+  const register = async () => {
     if (name.trim().length === 0) {
       showValidationMessage('Nome deve ser informado');
       return;
@@ -37,13 +34,30 @@ export default function SignUp({ navigation }) {
       return;
     }
 
-    const user = Object.assign(
-      {},
-      { name, email, username, password, public_id: uuid(), alwaysLogged }
-    );
-    setItem(KEY, user);
-    console.debug(`Registered user: ${user.public_id}`);
-    navigation.navigate('Home', { user: user });
+    let stored_user = (await getObject(USERS_KEY)) || {};
+
+    if (stored_user !== null) {
+      if (stored_user.email === email) {
+        showMessage('Email já cadastrado', 'Cadastre outro email ou realize o acesso');
+        return;
+      }
+
+      if (stored_user.username === username) {
+        showMessage('Usuário já cadastrado', 'Cadastre outro usuário ou realize o acesso');
+        return;
+      }
+    }
+
+    const user = { name, email, username, password, public_id: uuid(), alwaysLogged };
+    const registerTime = new Date();
+
+    await store(USERS_KEY, user);
+    await store(USERID_LOGGED_KEY, user.public_id);
+    console.debug(`Registered user: ${user.public_id} at ${registerTime}`);
+    await store(FIRST_ACCESS_KEY, false);
+    console.debug(`First access set to false`);
+    await store(LAST_UPDATE_KEY, registerTime);
+    navigation.navigate('Home', { userId: user.public_id });
   };
 
   return (
@@ -77,9 +91,9 @@ export default function SignUp({ navigation }) {
         style={{ marginBottom: 10 }}
         onClick={() => setAlwaysLogged(!alwaysLogged)}
         isChecked={alwaysLogged}
-        rightText={'Manter logado'}
+        rightText={'Manter conectado'}
       />
-      <Button title="Cadastrar e Acessar" onPress={() => register()} />
+      <Button title="Cadastrar e Acessar" onPress={register} />
       <Text style={{ alignSelf: 'center', fontSize: 20, marginVertical: 12 }}>OU</Text>
       <Button title="Acessar" onPress={navigation.goBack} />
     </Layout>

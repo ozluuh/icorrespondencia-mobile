@@ -8,6 +8,7 @@ export default function InputText({
   value,
   style,
   password = false,
+  disabled = false
 }) {
   return (
     <View style={[styles.container, style]}>
@@ -16,6 +17,7 @@ export default function InputText({
         onChangeText={onChangeText}
         value={value}
         secureTextEntry={password}
+        editable={!disabled}
       />
     </View>
   );

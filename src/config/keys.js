@@ -1,0 +1,5 @@
+export const FIRST_ACCESS_KEY = 'FIRST_ACCESS';
+export const USERS_KEY = 'USERS';
+export const USERID_LOGGED_KEY = 'USERID_LOGGED';
+export const ALWAYS_LOGGED_KEY = 'ALWAYS_LOGGED';
+export const LAST_UPDATE_KEY = 'LAST_UPDATE';

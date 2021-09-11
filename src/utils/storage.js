@@ -22,12 +22,13 @@ export const getObject = async key => {
     const response = await getItem(key);
     return response !== null ? JSON.parse(response) : null;
   } catch (e) {
-    throw new Error(e|| 'Error from getObject');
+    throw new Error(e || 'Error from getObject');
   }
 };
 
 export const destroy = async key => {
   try {
+    console.debug(`Destroy called`);
     await AsyncStorage.removeItem(key);
   } catch (e) {
     throw new Error(e || 'Error from purge');
@@ -40,5 +41,14 @@ export const purgeAll = async () => {
     await AsyncStorage.clear();
   } catch (e) {
     throw new Error(e || 'Error from purgeAll');
+  }
+};
+
+export const getAllKeys = async () => {
+  try {
+    console.debug(`Keys called`);
+    return await AsyncStorage.getAllKeys();
+  } catch (e) {
+    throw new Error(e || 'Error from getAllKeys');
   }
 };

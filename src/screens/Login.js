@@ -4,47 +4,72 @@ import CheckBox from 'react-native-check-box';
 import Button from '../components/Button';
 import InputText from '../components/InputText';
 import Layout from '../components/Layout';
-import { getObject, setItem } from '../utils/storage';
+import {
+  ALWAYS_LOGGED_KEY,
+  FIRST_ACCESS_KEY,
+  LAST_UPDATE_KEY,
+  USERID_LOGGED_KEY,
+  USERS_KEY,
+} from '../config/keys';
+import { destroy, getAllKeys, getObject, purgeAll, store } from '../utils/storage';
 
 export default function Login({ navigation }) {
-  const KEY = 'isFirstAccess';
-
-  const [user, setUser] = useState();
+  const [user, setUser] = useState(null);
   const [alwaysLogged, setAlwaysLogged] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [lastUpdate, setLastUpdate] = useState(null);
 
   useEffect(() => {
     async function fetchUser() {
-      const u = await getObject('USER');
+      setUsername('');
+      setPassword('');
+      
+      const lastUpdateStored = await getObject(LAST_UPDATE_KEY);
+      setLastUpdate(lastUpdateStored);
 
-      if (u !== null) {
-        console.debug(`Has User`);
-        setUser(u);
+      const userId = await getObject(USERID_LOGGED_KEY);
+      const isLogged = await getObject(ALWAYS_LOGGED_KEY);
 
-        if (user?.alwaysLogged) {
+      if (userId !== null) {
+        console.debug(`Has UserId`);
+
+        if (isLogged) {
           console.debug(`User logged. Redirecting to Home`);
-          navigation.navigate('Home');
+          navigation.navigate('Home', { userId });
         }
+
+        console.debug(`Retrieving user data`);
+        const userData = await getObject(USERS_KEY);
+
+        if (userData.public_id === userId) {
+          console.log(`Set user`);
+          setUser(userData);
+        }
+        return;
       }
+      // await destroy(USERS_KEY);
+      console.debug(`Not user found`);
+
+      const k = await getAllKeys();
+      console.log(`Keys ${JSON.stringify(k)}`);
     }
 
     async function fetchAccess() {
-      const t = await getObject(KEY);
+      const isFirstAccess = await getObject(FIRST_ACCESS_KEY);
 
-      if (!t) {
+      if (!isFirstAccess && isFirstAccess !== null) {
         console.debug(`Not First Access`);
         return;
       }
 
       console.debug(`First Access`);
-      await setItem(KEY, false);
       navigation.navigate('SignUp');
     }
 
     fetchUser();
     fetchAccess();
-  }, []);
+  }, [lastUpdate]);
 
   const showMessage = (title, body) => {
     Alert.alert(title, body);
@@ -54,7 +79,9 @@ export default function Login({ navigation }) {
     showMessage('Campo obrigatório não informado', body);
   };
 
-  const redirect = () => {
+  const redirect = async () => {
+    await store(LAST_UPDATE_KEY, new Date());
+    console.log(`USER before Login ${JSON.stringify(user)}`);
     if (username.trim().length === 0) {
       showValidationMessage('Usuário não informado');
       return;
@@ -65,7 +92,14 @@ export default function Login({ navigation }) {
       return;
     }
 
+    if (user === null) {
+      showMessage('Usuário não existente', 'Verifique os dados informados ou crie um novo usuário');
+      return;
+    }
+
     if (password !== user.password || username !== user.username) {
+      console.log(`Invalid credentials`);
+
       showMessage(
         'Credenciais inválidas',
         'Usuário ou senha não coincidem. Verifique suas credenciais'
@@ -75,7 +109,12 @@ export default function Login({ navigation }) {
 
     user.alwaysLogged = alwaysLogged;
 
-    navigation.navigate('Home', { user });
+    await store(USERS_KEY, user);
+
+    setUsername('');
+    setPassword('');
+    console.debug(`USER ${JSON.stringify(user)}`);
+    navigation.navigate('Home', { userId: user.public_id });
   };
 
   return (
