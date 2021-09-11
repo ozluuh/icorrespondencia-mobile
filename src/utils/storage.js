@@ -24,3 +24,11 @@ export const getObject = async key => {
     throw new Error(e);
   }
 };
+
+export const purge = async key => {
+  try {
+    await AsyncStorage.removeItem(key);
+  } catch (e) {
+    throw new Error(e || 'Error from purge');
+  }
+};
