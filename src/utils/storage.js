@@ -8,9 +8,10 @@ export const getItem = async key => {
   }
 };
 
-export const setItem = async (key, value) => {
+export const store = async (key, value) => {
   try {
-    await AsyncStorage.setItem(key, JSON.stringify(value));
+    const data = JSON.stringify(value);
+    await AsyncStorage.setItem(key, data);
   } catch (e) {
     throw new Error(e || 'Error from setItem');
   }
@@ -19,16 +20,25 @@ export const setItem = async (key, value) => {
 export const getObject = async key => {
   try {
     const response = await getItem(key);
-    return JSON.parse(response);
+    return response !== null ? JSON.parse(response) : null;
   } catch (e) {
-    throw new Error(e);
+    throw new Error(e|| 'Error from getObject');
   }
 };
 
-export const purge = async key => {
+export const destroy = async key => {
   try {
     await AsyncStorage.removeItem(key);
   } catch (e) {
     throw new Error(e || 'Error from purge');
+  }
+};
+
+export const purgeAll = async () => {
+  try {
+    console.debug(`Purge called`);
+    await AsyncStorage.clear();
+  } catch (e) {
+    throw new Error(e || 'Error from purgeAll');
   }
 };
