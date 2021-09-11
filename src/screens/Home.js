@@ -1,7 +1,6 @@
 import React from 'react';
 import { Text } from 'react-native';
 import Button from '../components/Button';
-import InputText from '../components/InputText';
 import Layout from '../components/Layout';
 
 export default function Home({ navigation, route }) {

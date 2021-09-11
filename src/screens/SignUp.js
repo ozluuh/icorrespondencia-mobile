@@ -1,6 +1,5 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState } from 'react';
-import { Alert, Text, View } from 'react-native';
+import { Alert, Text } from 'react-native';
 import CheckBox from 'react-native-check-box';
 import { v4 as uuid } from 'uuid';
 import Button from '../components/Button';
