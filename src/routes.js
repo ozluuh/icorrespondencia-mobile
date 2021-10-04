@@ -7,14 +7,23 @@ export default [
   {
     name: 'Login',
     component: Login,
+    options:{
+      headerShown: false
+    }
   },
   {
     name: 'SignUp',
     component: SignUp,
+    options:{
+      headerShown: false
+    }
   },
   {
     name: 'Home',
     component: Home,
+    options:{
+      headerShown: false
+    }
   },
   {
     name: 'Profile',
