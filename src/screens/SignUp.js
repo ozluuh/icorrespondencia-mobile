@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { Text } from 'react-native';
 import CheckBox from 'react-native-check-box';
 
 import Button from '../components/Button';
 import InputText from '../components/InputText';
 import Layout from '../components/Layout';
+import Link from '../components/Link';
 import { showMessage } from '../utils/message';
 
 export default function SignUp({ navigation }) {
@@ -71,7 +73,10 @@ export default function SignUp({ navigation }) {
         isChecked={alwaysLogged}
         rightText={'Manter conectado'}
       />
+      <Text>Condomínio</Text>
+      <Text>Quarto, apenas se o tipo do usuário </Text>
       <Button title="Cadastrar" onPress={register} />
+      <Link title="Já possui acesso?" textDecoration onClick={() => navigation.navigate('Login')} />
     </Layout>
   );
 }

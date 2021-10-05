@@ -1,5 +1,12 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity, ViewPropTypes
+} from 'react-native';
+
+import PropTypes from 'prop-types';
+
 
 export default function Button({ title, style, onPress }) {
   return (
@@ -19,4 +26,18 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 16,
   },
+  link: {
+    backgroundColor: '#a0f',
+    padding: 12,
+  },
 });
+
+Button.propTypes = {
+  title: PropTypes.string.isRequired,
+  style: ViewPropTypes.style,
+  onPress: PropTypes.func,
+};
+
+Button.defaultProps = {
+  onPress: () => {},
+};

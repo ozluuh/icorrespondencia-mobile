@@ -4,6 +4,7 @@ import CheckBox from 'react-native-check-box';
 import Button from '../components/Button';
 import InputText from '../components/InputText';
 import Layout from '../components/Layout';
+import Link from '../components/Link';
 import { ALWAYS_LOGGED_KEY, USER_PUBLIC_ID_LOGGED_KEY } from '../config/keys';
 import { UserContext } from '../context/UserContext';
 import { getUserByUsernameAndPassword } from '../utils/api';
@@ -39,7 +40,8 @@ export default function Login({ navigation }) {
 
       if (alwaysLogged) {
         store(ALWAYS_LOGGED_KEY, true);
-        store(USER_PUBLIC_ID_LOGGED_KEY, user.publicId);
+        store(USER_PUBLIC_ID_LOGGED_KEY, user.public_id);
+        store(user.public_id, user);
       }
 
       navigation.navigate('Home');
@@ -69,6 +71,7 @@ export default function Login({ navigation }) {
         rightText={'Manter conectado'}
       />
       <Button title="Acessar" onPress={login} />
+      <Link title="Ainda não possui acesso?" onClick={() => navigation.navigate('SignUp')} />
     </Layout>
   );
 }

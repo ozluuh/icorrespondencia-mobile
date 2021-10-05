@@ -32,13 +32,12 @@ export const getUser = async id => {
 /**
  * @typedef {Object} UserValidResponseBody
  * @property {string} name
- * @property {string} publicId
+ * @property {string} public_id
  * @property {string} createdAt
  * @property {string} excludedAt
  * @property {string} updatedAt
  * @property {boolean} active
  * @property {string} username
- * @property {string} password
  * @property {string} email
  * @property {Roles[]} roles
  */
@@ -58,7 +57,19 @@ export const getUserByUsernameAndPassword = async ({ username, password }) => {
       body: JSON.stringify({ username, password }),
     });
 
-    console.debug(`Requisição, ${JSON.stringify(response)}`);
+    if (response.status !== 200) {
+      return null;
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getUserByPublicId = async publicId => {
+  try {
+    const response = await fetch(`${USER_URL}/${publicId}`);
 
     if (response.status !== 200) {
       return null;
