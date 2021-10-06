@@ -1,53 +1,31 @@
 import React from 'react';
 import { View, ViewPropTypes } from 'react-native';
+import Picker from 'react-native-picker-select';
 
-import { Picker } from '@react-native-picker/picker';
 import PropTypes from 'prop-types';
 
 import { styles } from './style';
 
-export default function DropDown({
-  label,
-  selectedItem,
-  onItemChange,
-  items,
-  keyExtractor,
-  itemLabelExtractor,
-  itemValueExtractor,
-  style
-}) {
+export default function DropDown({ selectedItem, onItemChange, items, style, placeholder = {}}) {
   return (
     <View style={[styles.container, style]}>
       <Picker
-        prompt={label}
-        selectedValue={selectedItem}
+        placeholder={placeholder}
+        value={selectedItem}
         onValueChange={onItemChange}
-      >
-        {label && <Picker.Item label={label} enabled={false} />}
-
-        {items.map(item => (
-          <Picker.Item
-            key={keyExtractor(item)}
-            label={itemLabelExtractor(item)}
-            value={itemValueExtractor(item)}
-          />
-        ))}
-      </Picker>
+        items={items}
+      />
     </View>
   );
 }
 
 DropDown.propTypes = {
-  label: PropTypes.string,
   selectedItem: PropTypes.any,
   onItemChange: PropTypes.func,
   items: PropTypes.array.isRequired,
-  keyExtractor: PropTypes.func.isRequired,
-  itemLabelExtractor: PropTypes.func.isRequired,
-  itemValueExtractor: PropTypes.func.isRequired,
   style: ViewPropTypes.style,
-};
-
-DropDown.defaultProps = {
-  label: null,
+  placeholder: PropTypes.shape({
+    value: PropTypes.any,
+    label: PropTypes.string,
+  }),
 };

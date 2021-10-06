@@ -15,7 +15,8 @@ export default [
     name: 'SignUp',
     component: SignUp,
     options:{
-      headerShown: false
+      title: 'Novo usuário',
+      headerBackVisible: false,
     }
   },
   {
