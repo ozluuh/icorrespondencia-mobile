@@ -1,6 +1,7 @@
 const BASE_URL = 'http://192.168.0.25:8080/api';
 const USER_URL = `${BASE_URL}/users`;
 const REGISTERED_USER_URL = `${BASE_URL}/users/validation`;
+const TOWNHOUSE_URL = `${BASE_URL}/townhouses`;
 
 export const getUser = async id => {
   try {
@@ -18,18 +19,14 @@ export const getUser = async id => {
 
 /**
  * @typedef {Object} T
- *
  * @property {number} id
- */
-/**
- * @typedef {Object} Roles
  *
+ * @typedef {Object} Roles
  * @property {number} id
  * @property {string} name
  * @property {T} townhouse
  * @property {T} room
- */
-/**
+ *
  * @typedef {Object} UserValidResponseBody
  * @property {string} name
  * @property {string} public_id
@@ -75,6 +72,70 @@ export const getUserByPublicId = async publicId => {
       return null;
     }
 
+    return await response.json();
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+/**
+ * @typedef {Object} TownhousesValidResponse
+ * @property {string} name
+ * @property {string} createdAt
+ * @property {string} updatedAt
+ * @property {boolean} active
+ * @property {string} site
+ * @property {string} cnpj
+ * @property {string} email
+ * @property {string} phone
+ * @property {string} public_id
+ */
+/**
+ * Obtain all townhouses
+ * @returns {TownhousesValidResponse[]} List of townhouses or empty list
+ */
+export const getTownhouses = async () => {
+  try {
+    const response = await fetch(TOWNHOUSE_URL);
+
+    if (response.status !== 200) {
+      return [];
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.log(error);
+  }
+};
+/**
+ * @typedef {Object} Room
+ * @property {number} id
+ * @property {number} number
+ *
+ * @typedef {Object} Block
+ * @property {number} id
+ * @property {string} name
+ * @property {Room[]} rooms
+ *
+ * @typedef {Object} Blocks
+ * @property {Block[]} blocks
+ * 
+ * @typedef {TownhousesValidResponse & Blocks} TownhouseResponse
+ */
+
+/**
+ */
+/**Obtain townhouse data by public_id
+ * @param {string} publicId id to search
+ * @returns {TownhouseResponse}
+ */
+export const getTownhouseByPublicId = async publicId => {
+  try {
+    const response = await fetch(`${TOWNHOUSE_URL}/${publicId}`);
+
+    if (response.status !== 200) {
+      return null;
+    }
     return await response.json();
   } catch (error) {
     console.log(error);

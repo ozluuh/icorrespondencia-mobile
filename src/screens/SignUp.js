@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
-import { Text } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import CheckBox from 'react-native-check-box';
 
 import Button from '../components/Button';
+import DropDown from '../components/DropDown';
 import InputText from '../components/InputText';
 import Layout from '../components/Layout';
 import Link from '../components/Link';
+import { getTownhouses } from '../utils/api';
 import { showMessage } from '../utils/message';
 
 export default function SignUp({ navigation }) {
@@ -14,6 +15,22 @@ export default function SignUp({ navigation }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [alwaysLogged, setAlwaysLogged] = useState(false);
+
+  const [isLoading, setLoading] = useState(false);
+  const [townhouses, setTownhouses] = useState([]);
+  const [selectedTownhouse, setSelectedTownhouse] = useState();
+
+  useEffect(() => {
+    setLoading(true);
+    async function fetchTownhouses() {
+      const response = await getTownhouses();
+
+      setTownhouses(response);
+      setLoading(false);
+    }
+
+    fetchTownhouses();
+  }, []);
 
   const validation = () => {
     if (name.trim().length === 0) {
@@ -39,6 +56,10 @@ export default function SignUp({ navigation }) {
       showMessage(error.message);
     }
   };
+
+  if (isLoading) {
+    return null;
+  }
 
   return (
     <Layout style={{ justifyContent: 'center', paddingHorizontal: 12 }}>
@@ -67,14 +88,22 @@ export default function SignUp({ navigation }) {
         onChangeText={e => setPassword(e.trim())}
         password
       />
+      <DropDown
+        label="Selecione o condomínio"
+        items={townhouses}
+        selectedItem={selectedTownhouse}
+        onItemChange={setSelectedTownhouse}
+        keyExtractor={townhouse => townhouse.public_id}
+        itemLabelExtractor={townhouse => townhouse.name}
+        itemValueExtractor={townhouse => townhouse.public_id}
+        style={{ marginBottom: 15 }}
+      />
       <CheckBox
         style={{ marginBottom: 10 }}
         onClick={() => setAlwaysLogged(prev => !prev)}
         isChecked={alwaysLogged}
         rightText={'Manter conectado'}
       />
-      <Text>Condomínio</Text>
-      <Text>Quarto, apenas se o tipo do usuário </Text>
       <Button title="Cadastrar" onPress={register} />
       <Link title="Já possui acesso?" textDecoration onClick={() => navigation.navigate('Login')} />
     </Layout>
