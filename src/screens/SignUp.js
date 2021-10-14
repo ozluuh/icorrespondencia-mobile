@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { ActivityIndicator } from 'react-native';
 import CheckBox from 'react-native-check-box';
 
 import Button from '../components/Button';
@@ -58,7 +59,7 @@ export default function SignUp({ navigation }) {
   };
 
   if (isLoading) {
-    return null;
+    return <ActivityIndicator size="large" color="#000" />;
   }
 
   return (
@@ -89,13 +90,10 @@ export default function SignUp({ navigation }) {
         password
       />
       <DropDown
-        label="Selecione o condomínio"
+        placeholder={{ value: null, label: 'Selecione o condomínio' }}
         items={townhouses}
         selectedItem={selectedTownhouse}
         onItemChange={setSelectedTownhouse}
-        keyExtractor={townhouse => townhouse.public_id}
-        itemLabelExtractor={townhouse => townhouse.name}
-        itemValueExtractor={townhouse => townhouse.public_id}
         style={{ marginBottom: 15 }}
       />
       <CheckBox
