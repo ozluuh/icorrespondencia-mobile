@@ -7,7 +7,7 @@ import DropDown from '../components/DropDown';
 import InputText from '../components/InputText';
 import Layout from '../components/Layout';
 import Link from '../components/Link';
-import { getTownhouses } from '../utils/api';
+import { createUser, getTownhouses } from '../utils/api';
 import { showMessage } from '../utils/message';
 
 export default function SignUp({ navigation }) {
@@ -23,11 +23,20 @@ export default function SignUp({ navigation }) {
 
   useEffect(() => {
     setLoading(true);
+
     async function fetchTownhouses() {
       const response = await getTownhouses();
 
-      setTownhouses(response);
-      setLoading(false);
+      if (response.length <= 0) {
+        return;
+      }
+
+      const parsedResponse = response.map(item =>
+        Object.assign({}, { label: item.name, value: item.public_id })
+      );
+
+      setTownhouses(parsedResponse);
+      setLoading(prev => !prev);
     }
 
     fetchTownhouses();
@@ -55,11 +64,28 @@ export default function SignUp({ navigation }) {
       console.log('Sucesso');
     } catch (error) {
       showMessage(error.message);
+      return;
     }
+
+    const newUser = {
+      name,
+      username,
+      password,
+      email,
+      role: { townhouse: { id: selectedTownhouse } },
+    };
+
+    const response = await createUser(newUser);
+
+    console.log(response);
   };
 
   if (isLoading) {
-    return <ActivityIndicator size="large" color="#000" />;
+    return (
+      <Layout style={{ justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#000" />
+      </Layout>
+    );
   }
 
   return (
@@ -89,13 +115,15 @@ export default function SignUp({ navigation }) {
         onChangeText={e => setPassword(e.trim())}
         password
       />
-      <DropDown
-        placeholder={{ value: null, label: 'Selecione o condomínio' }}
-        items={townhouses}
-        selectedItem={selectedTownhouse}
-        onItemChange={setSelectedTownhouse}
-        style={{ marginBottom: 15 }}
-      />
+      {townhouses.length > 0 && (
+        <DropDown
+          placeholder={{ value: null, label: 'Selecione o condomínio' }}
+          items={townhouses}
+          selectedItem={selectedTownhouse}
+          onItemChange={setSelectedTownhouse}
+          style={{ marginBottom: 15 }}
+        />
+      )}
       <CheckBox
         style={{ marginBottom: 10 }}
         onClick={() => setAlwaysLogged(prev => !prev)}
