@@ -105,6 +105,7 @@ export const getTownhouses = async () => {
     return await response.json();
   } catch (error) {
     console.log(error);
+    return [];
   }
 };
 /**
@@ -136,6 +137,7 @@ export const getTownhouseByPublicId = async publicId => {
     if (response.status !== 200) {
       return null;
     }
+    
     return await response.json();
   } catch (error) {
     console.log(error);

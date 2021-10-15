@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 
 import { styles } from './style';
 
-export default function DropDown({ selectedItem, onItemChange, items, style, placeholder = {}}) {
+export default function DropDown({ selectedItem, onItemChange, items, style, placeholder = {} }) {
   return (
     <View style={[styles.container, style]}>
       <Picker
@@ -14,6 +14,7 @@ export default function DropDown({ selectedItem, onItemChange, items, style, pla
         value={selectedItem}
         onValueChange={onItemChange}
         items={items}
+        style={{ inputAndroid: { color: 'black' } }}
       />
     </View>
   );
