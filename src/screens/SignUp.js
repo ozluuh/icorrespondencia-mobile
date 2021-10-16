@@ -103,7 +103,7 @@ export default function SignUp({ navigation }) {
       username,
       password,
       email,
-      role: { townhouse: { id: selectedTownhouse } },
+      role: { townhouse: { id: selectedTownhouse }, room: { id: selectedRoom } },
     };
 
     let response;
