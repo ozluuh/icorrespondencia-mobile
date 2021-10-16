@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator } from 'react-native';
 import CheckBox from 'react-native-check-box';
 
@@ -7,8 +7,11 @@ import DropDown from '../components/DropDown';
 import InputText from '../components/InputText';
 import Layout from '../components/Layout';
 import Link from '../components/Link';
-import { createUser, getTownhouses } from '../utils/api';
+import { ALWAYS_LOGGED_KEY, USER_PUBLIC_ID_LOGGED_KEY } from '../config/keys';
+import { UserContext } from '../context/UserContext';
+import { createUser, getTownhouseByPublicId, getTownhouses } from '../utils/api';
 import { showMessage } from '../utils/message';
+import { store } from '../utils/storage';
 
 export default function SignUp({ navigation }) {
   const [name, setName] = useState('');
@@ -20,6 +23,11 @@ export default function SignUp({ navigation }) {
   const [isLoading, setLoading] = useState(false);
   const [townhouses, setTownhouses] = useState([]);
   const [selectedTownhouse, setSelectedTownhouse] = useState();
+
+  const [rooms, setRooms] = useState([]);
+  const [selectedRoom, setSelectedRoom] = useState();
+
+  const context = useContext(UserContext);
 
   useEffect(() => {
     setLoading(true);
@@ -42,6 +50,31 @@ export default function SignUp({ navigation }) {
     fetchTownhouses();
   }, []);
 
+  useEffect(() => {
+    setLoading(true);
+
+    async function fetchRooms() {
+      const response = await getTownhouseByPublicId(selectedTownhouse);
+
+      if (response == null) {
+        return;
+      }
+
+      const parsedResponse = [];
+
+      response.blocks.map(b =>
+        b.rooms.map(r =>
+          parsedResponse.push(Object.assign({}, { label: `${r.number} - ${b.name}`, value: r.id }))
+        )
+      );
+
+      setRooms(parsedResponse);
+      setLoading(false);
+    }
+
+    fetchRooms();
+  }, [selectedTownhouse]);
+
   const validation = () => {
     if (name.trim().length === 0) {
       throw new Error('Nome deve ser informado');
@@ -60,8 +93,6 @@ export default function SignUp({ navigation }) {
   const register = async () => {
     try {
       validation();
-
-      console.log('Sucesso');
     } catch (error) {
       showMessage(error.message);
       return;
@@ -75,9 +106,23 @@ export default function SignUp({ navigation }) {
       role: { townhouse: { id: selectedTownhouse } },
     };
 
-    const response = await createUser(newUser);
+    let response;
 
-    console.log(response);
+    try {
+      response = await createUser(newUser);
+
+      context.setUser(response);
+
+      if (alwaysLogged) {
+        store(ALWAYS_LOGGED_KEY, true);
+        store(USER_PUBLIC_ID_LOGGED_KEY, response.public_id);
+        store(response.public_id, response);
+      }
+
+      navigation.navigate('Home');
+    } catch (error) {
+      showMessage(error.message);
+    }
   };
 
   if (isLoading) {
@@ -121,6 +166,15 @@ export default function SignUp({ navigation }) {
           items={townhouses}
           selectedItem={selectedTownhouse}
           onItemChange={setSelectedTownhouse}
+          style={{ marginBottom: 15 }}
+        />
+      )}
+      {selectedTownhouse && rooms.length > 0 && (
+        <DropDown
+          placeholder={{ value: null, label: 'Selecione o apartamento' }}
+          items={rooms}
+          selectedItem={selectedRoom}
+          onItemChange={setSelectedRoom}
           style={{ marginBottom: 15 }}
         />
       )}

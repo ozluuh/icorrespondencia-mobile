@@ -79,6 +79,40 @@ export const getUserByPublicId = async publicId => {
 };
 
 /**
+ * Create user
+ * @return {UserValidResponseBody}
+ */
+export const createUser = async user => {
+  let response;
+  let json;
+
+  try {
+    response = await fetch(USER_URL, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(user),
+    });
+
+    json = await response.json();
+
+    if (response.status === 201) {
+      return json;
+    }
+  } catch (error) {
+    console.log(`catch Api: ${error}`);
+  }
+  
+  if (response.status === 400) {
+    throw new Error(json.details);
+  }
+  
+  throw new Error(`Erro de servidor: ${response.message}`);
+};
+
+/**
  * @typedef {Object} TownhousesValidResponse
  * @property {string} name
  * @property {string} createdAt
@@ -120,7 +154,7 @@ export const getTownhouses = async () => {
  *
  * @typedef {Object} Blocks
  * @property {Block[]} blocks
- * 
+ *
  * @typedef {TownhousesValidResponse & Blocks} TownhouseResponse
  */
 
@@ -137,7 +171,7 @@ export const getTownhouseByPublicId = async publicId => {
     if (response.status !== 200) {
       return null;
     }
-    
+
     return await response.json();
   } catch (error) {
     console.log(error);
