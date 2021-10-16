@@ -1,14 +1,16 @@
 import React from 'react';
-import { SafeAreaView, ViewPropTypes } from 'react-native';
+import { Keyboard, SafeAreaView, TouchableWithoutFeedback, ViewPropTypes } from 'react-native';
 
 import PropTypes from 'prop-types';
 
 import { styles } from './style';
 
-
-
 export default function Layout({ children, style }) {
-  return <SafeAreaView style={[styles.container, style]}>{children}</SafeAreaView>;
+  return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <SafeAreaView style={[styles.container, style]}>{children}</SafeAreaView>
+    </TouchableWithoutFeedback>
+  );
 }
 
 Layout.propTypes = {
