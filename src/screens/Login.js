@@ -27,6 +27,12 @@ export default function Login({ navigation }) {
     }
   };
 
+  const resetFields = () => {
+    setUsername('');
+    setPassword('');
+    setAlwaysLogged(false);
+  };
+
   const login = async () => {
     try {
       validation();
@@ -43,6 +49,8 @@ export default function Login({ navigation }) {
         store(USER_PUBLIC_ID_LOGGED_KEY, user.public_id);
         store(user.public_id, user);
       }
+
+      resetFields();
 
       navigation.navigate('Home');
     } catch (error) {
