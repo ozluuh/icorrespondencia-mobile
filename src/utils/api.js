@@ -1,4 +1,5 @@
-const BASE_URL = 'http://192.168.0.25:8080/api';
+const IP = '192.168.0.73';
+const BASE_URL = `http://${IP}:8080/api`;
 const USER_URL = `${BASE_URL}/users`;
 const REGISTERED_USER_URL = `${BASE_URL}/users/validation`;
 const TOWNHOUSE_URL = `${BASE_URL}/townhouses`;
@@ -21,7 +22,7 @@ export const getUser = async id => {
  * @typedef {Object} T
  * @property {number} id
  *
- * @typedef {Object} Roles
+ * @typedef {Object} Role
  * @property {number} id
  * @property {string} name
  * @property {T} townhouse
@@ -36,7 +37,7 @@ export const getUser = async id => {
  * @property {boolean} active
  * @property {string} username
  * @property {string} email
- * @property {Roles[]} roles
+ * @property {Role} role
  */
 
 /**

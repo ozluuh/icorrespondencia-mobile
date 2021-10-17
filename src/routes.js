@@ -7,24 +7,26 @@ export default [
   {
     name: 'Login',
     component: Login,
-    options:{
-      headerShown: false
-    }
+    options: {
+      headerShown: false,
+    },
   },
   {
     name: 'SignUp',
     component: SignUp,
-    options:{
+    options: {
       title: 'Novo usuário',
       headerBackVisible: false,
-    }
+    },
   },
   {
     name: 'Home',
     component: Home,
-    options:{
-      headerShown: false
-    }
+    options: {
+      title: 'Dashboard',
+      headerShown: true,
+      headerBackVisible: false,
+    },
   },
   {
     name: 'Profile',

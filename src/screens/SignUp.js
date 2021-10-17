@@ -40,7 +40,7 @@ export default function SignUp({ navigation }) {
       }
 
       const parsedResponse = response.map(item =>
-        Object.assign({}, { label: item.name, value: item.public_id })
+        Object.assign({}, { label: item.name, value: item.public_id, townhouse: item })
       );
 
       setTownhouses(parsedResponse);
@@ -64,7 +64,7 @@ export default function SignUp({ navigation }) {
 
       response.blocks.map(b =>
         b.rooms.map(r =>
-          parsedResponse.push(Object.assign({}, { label: `${r.number} - ${b.name}`, value: r.id }))
+          parsedResponse.push(Object.assign({}, { label: `${r.number} - ${b.name}`, value: r.id, number: r.number }))
         )
       );
 
@@ -110,6 +110,9 @@ export default function SignUp({ navigation }) {
 
     try {
       response = await createUser(newUser);
+
+      response.role.room["number"] = rooms.filter(item => item.value === selectedRoom)[0].number;
+      response.role.townhouse = townhouses.filter(item => item.value === selectedTownhouse)[0].townhouse;
 
       context.setUser(response);
 
