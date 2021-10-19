@@ -60,3 +60,21 @@ export const getAllKeys = async () => {
     throw new Error(e || 'Error from getAllKeys');
   }
 };
+
+export const storeOrUpdate = async (key, value) => {
+  try {
+    let data = await getItem(key);
+
+    if(data === null) {
+      store(key, value);
+      return;
+    }
+
+    data = JSON.stringify(value);
+
+    console.log(`Merged KEY ${key}`);
+    await AsyncStorage.mergeItem(key, data);
+  } catch (e) {
+    throw new Error(e || 'Error from storeOrUpdate');
+  }
+}

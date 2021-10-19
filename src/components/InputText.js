@@ -30,7 +30,7 @@ export default function InputText({
 
 InputText.propTypes = {
   placeholder: PropTypes.string,
-  onChangeText: PropTypes.func.isRequired,
+  onChangeText: PropTypes.func,
   value: PropTypes.string.isRequired,
   style: ViewPropTypes.style,
   password: PropTypes.bool,

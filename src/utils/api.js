@@ -105,12 +105,38 @@ export const createUser = async user => {
   } catch (error) {
     console.log(`catch Api: ${error}`);
   }
-  
+
   if (response.status === 400) {
     throw new Error(json.details);
   }
-  
+
   throw new Error(`Erro de servidor: ${response.message}`);
+};
+
+export const updateUser = async user => {
+  let response;
+  let json;
+
+  try {
+    response = await fetch(USER_URL, {
+      method: 'PUT',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(user),
+    });
+
+    json = await response.json();
+
+    if(response.status !== 204) {
+      return json;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+
+  console.log(json)
 };
 
 /**
@@ -130,7 +156,7 @@ export const getMailings = async user_id => {
   try {
     const response = await fetch(`${USER_URL}/${user_id}/mailings`);
 
-    if(response.status !== 200) {
+    if (response.status !== 200) {
       return [];
     }
 
@@ -138,7 +164,7 @@ export const getMailings = async user_id => {
   } catch (error) {
     console.log(error);
   }
-}
+};
 
 /**
  * @typedef {Object} TownhousesValidResponse

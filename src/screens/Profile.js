@@ -1,87 +1,79 @@
-import React, { useEffect, useState } from 'react';
-import { Alert, View } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { View } from 'react-native';
 import CheckBox from 'react-native-check-box';
+
 import Button from '../components/Button';
 import InputText from '../components/InputText';
 import Layout from '../components/Layout';
-import { FIRST_ACCESS_KEY, LAST_UPDATE_KEY, USERS_KEY } from '../config/keys';
-import { getAllKeys, getObject, purgeAll, store } from '../utils/storage';
+import { ALWAYS_LOGGED_KEY, USER_PUBLIC_ID_LOGGED_KEY } from '../config/keys';
+import { UserContext } from '../context/UserContext';
+import { updateUser } from '../utils/api';
+import { showMessage } from '../utils/message';
+import { getObject, storeOrUpdate } from '../utils/storage';
 
-export default function Profile({ navigation, route }) {
-  const { userId } = route.params;
-  const [id, setId] = useState();
+export default function Profile({ navigation }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [alwaysLogged, setAlwaysLogged] = useState(false);
+  const [user, setUser] = useState({});
+
+  const context = useContext(UserContext);
 
   useEffect(() => {
     async function fetchUser() {
-      const u = await getObject(USERS_KEY);
+      const u = context.user;
 
-      setId(u.public_id);
+      setUser(u);
+
       setName(u.name);
-      setUsername(u.username);
       setEmail(u.email);
       setPassword(u.password);
-      setAlwaysLogged(u.alwaysLogged);
 
-      console.log(`USER ${JSON.stringify(u)}`);
+      const isLogged = await getObject(ALWAYS_LOGGED_KEY);
+
+      if (isLogged) {
+        setAlwaysLogged(u.alwaysLogged);
+      }
     }
 
     fetchUser();
   }, []);
 
-  const showValidationMessage = body => {
-    Alert.alert('Campo obrigatório não preenchido', body);
+  const validate = () => {
+    if (name.trim().length === 0) {
+      throw new Error('Nome deve ser informado');
+    }
+    if (email.trim().length === 0) {
+      throw new Error('E-mail deve ser informado');
+    }
+    if (password.trim().length === 0) {
+      throw new Error('Senha deve ser informada');
+    }
   };
 
   const update = async () => {
-    if (name.trim().length === 0) {
-      showValidationMessage('Nome deve ser informado');
-      return;
-    }
-    if (email.trim().length === 0) {
-      showValidationMessage('E-mail deve ser informado');
-      return;
-    }
-    if (username.trim().length === 0) {
-      showValidationMessage('Usuário deve ser informado');
-      return;
-    }
-    if (password.trim().length === 0) {
-      showValidationMessage('Senha deve ser informada');
-      return;
+    try {
+      validate();
+    } catch (error) {
+      showMessage(error.message);
     }
 
-    const updated = Object.assign(
-      {},
-      { name, email, username, password, alwaysLogged, public_id: id }
-    );
-    const updateTime = new Date();
-    await store(USERS_KEY, updated);
-    await store(LAST_UPDATE_KEY, updateTime);
-    console.debug(`Updated user: ${id} at ${updateTime}`);
+    const updated = Object.assign(user, { name, email, password });
+
+    await updateUser(updated);
+
+    if (alwaysLogged) {
+      await storeOrUpdate(user.public_id, updated);
+      await storeOrUpdate(USER_PUBLIC_ID_LOGGED_KEY, user.public_id);
+    }
+
     navigation.goBack();
-  };
-  
-  const remove = async () => {
-    const firstAccess = await getObject(FIRST_ACCESS_KEY);
-    const updateTime = new Date();
-    await purgeAll();
-    await store(FIRST_ACCESS_KEY, firstAccess);
-    await store(LAST_UPDATE_KEY, updateTime);
-    const k = await getAllKeys();
-    console.debug(`Purged at ${updateTime}`);
-    console.log(`Keys ${JSON.stringify(k)}`)
-    navigation.popToTop();
-
   };
 
   return (
-    <Layout style={{ justifyContent: 'center' }}>
-      <InputText placeholder="Id" style={{ marginBottom: 15 }} value={id} disabled />
+    <Layout style={{ justifyContent: 'center', paddingHorizontal: 12 }}>
+      <InputText placeholder="Id" style={{ marginBottom: 15 }} value={user?.public_id} disabled />
       <InputText
         placeholder="Nome"
         style={{ marginBottom: 15 }}
@@ -97,8 +89,8 @@ export default function Profile({ navigation, route }) {
       <InputText
         placeholder="Usuário"
         style={{ marginBottom: 15 }}
-        value={username}
-        onChangeText={e => setUsername(e.trim())}
+        value={user?.username}
+        disabled
       />
       <InputText
         placeholder="Senha"
@@ -107,15 +99,26 @@ export default function Profile({ navigation, route }) {
         onChangeText={e => setPassword(e.trim())}
         password
       />
+      <InputText
+        placeholder="Condomínio"
+        style={{ marginBottom: 15 }}
+        value={user?.role?.townhouse?.name}
+        disabled
+      />
+      <InputText
+        placeholder="Apartamento"
+        style={{ marginBottom: 15 }}
+        value={user?.role?.room?.number.toString()}
+        disabled
+      />
       <CheckBox
-        style={{ marginBottom: 10 }}
+        style={{ marginBottom: 15 }}
         onClick={() => setAlwaysLogged(!alwaysLogged)}
         isChecked={alwaysLogged}
-        rightText={'Manter logado'}
+        rightText={'Manter conectado'}
       />
-      <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 25 }}>
+      <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
         <Button title="Atualizar" style={{ marginRight: 10, flex: 1 }} onPress={update} />
-        <Button title="Excluir" style={{ flex: 1, backgroundColor: '#F00' }} onPress={remove} />
       </View>
     </Layout>
   );
