@@ -7,7 +7,7 @@ import ListItem from '../components/ListItem';
 import { UserContext } from '../context/UserContext';
 import { getMailings } from '../utils/api';
 
-export default function Home({ navigation }) {
+export default function Home() {
   const [mailings, setMailings] = useState([]);
   const [isLoading, setLoading] = useState(false);
 
