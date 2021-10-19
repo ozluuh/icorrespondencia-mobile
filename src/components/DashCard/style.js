@@ -5,7 +5,6 @@ export const styles = StyleSheet.create({
         backgroundColor: "#e7e7e7",
         flexGrow: 1,
         padding: 10,
-        marginHorizontal: 5,
     },
     text: {
         fontSize: 28,

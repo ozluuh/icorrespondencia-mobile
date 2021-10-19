@@ -114,6 +114,33 @@ export const createUser = async user => {
 };
 
 /**
+ * @typedef {Object} Mailing
+ * @property {number} id
+ * @property {string} deliveryDate
+ * @property {boolean} read
+ * @property {string} description
+ * @property {string} read_at
+ */
+/**
+ * Obtain all mailings by user
+ * @param {string} user_id User public id
+ * @returns {Mailing[]} Mailings list
+ */
+export const getMailings = async user_id => {
+  try {
+    const response = await fetch(`${USER_URL}/${user_id}/mailings`);
+
+    if(response.status !== 200) {
+      return [];
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+/**
  * @typedef {Object} TownhousesValidResponse
  * @property {string} name
  * @property {string} createdAt

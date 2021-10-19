@@ -1,14 +1,14 @@
 import React from 'react';
-import { Text, View } from 'react-native';
+import { Text, View, ViewPropTypes } from 'react-native';
 
 import { FontAwesome } from '@expo/vector-icons';
 import PropTypes from 'prop-types';
 
 import { styles } from './style';
 
-export default function DashCard({ title, icon, value }) {
+export default function DashCard({ title, icon, value, style }) {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, style]}>
       <View style={{ borderBottomWidth: 1 }}>
         <Text style={{ textAlign: 'center' }}>{title}</Text>
       </View>
@@ -24,6 +24,7 @@ DashCard.propTypes = {
   title: PropTypes.string.isRequired,
   icon: PropTypes.string,
   value: PropTypes.any.isRequired,
+  style: ViewPropTypes.style,
 };
 
 DashCard.defaultProps = {
