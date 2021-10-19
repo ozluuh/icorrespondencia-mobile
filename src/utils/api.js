@@ -129,14 +129,14 @@ export const updateUser = async user => {
 
     json = await response.json();
 
-    if(response.status !== 204) {
+    if (response.status !== 204) {
       return json;
     }
   } catch (error) {
     console.log(error);
   }
 
-  console.log(json)
+  console.log(json);
 };
 
 /**
@@ -227,6 +227,20 @@ export const getTownhouseByPublicId = async publicId => {
     }
 
     return await response.json();
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const setMailingRead = async ({ user_id, mailing_id }) => {
+  try {
+    await fetch(`${USER_URL}/${user_id}/mailings/${mailing_id}`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    });
   } catch (error) {
     console.log(error);
   }
