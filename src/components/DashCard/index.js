@@ -1,11 +1,11 @@
 import React from 'react';
 import { Text, View, ViewPropTypes } from 'react-native';
 
-import { FontAwesome } from '@expo/vector-icons';
 import PropTypes from 'prop-types';
 
-import { styles } from './style';
+import Icon from '../Icon';
 
+import { styles } from './style';
 export default function DashCard({ title, icon, value, style }) {
   return (
     <View style={[styles.container, style]}>
@@ -13,7 +13,7 @@ export default function DashCard({ title, icon, value, style }) {
         <Text style={{ textAlign: 'center' }}>{title}</Text>
       </View>
       <View style={[styles.row, styles.alignBaseline]}>
-        <FontAwesome name={icon} size={28} />
+        <Icon name={icon} size={28} />
         <Text style={styles.text}>{value}</Text>
       </View>
     </View>
