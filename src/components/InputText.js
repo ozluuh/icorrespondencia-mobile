@@ -1,14 +1,17 @@
 import React from 'react';
-import { StyleSheet, TextInput, View } from 'react-native';
+import { StyleSheet, TextInput, View, ViewPropTypes } from 'react-native';
+
+import PropTypes from 'prop-types';
 
 export default function InputText({
   placeholder,
-  enableAutoCorrect,
   onChangeText,
   value,
   style,
-  password = false,
-  disabled = false
+  password,
+  disabled,
+  autoCapitalize,
+  correct,
 }) {
   return (
     <View style={[styles.container, style]}>
@@ -18,10 +21,31 @@ export default function InputText({
         value={value}
         secureTextEntry={password}
         editable={!disabled}
+        autoCapitalize={autoCapitalize}
+        autoCorrect={correct}
       />
     </View>
   );
 }
+
+InputText.propTypes = {
+  placeholder: PropTypes.string,
+  onChangeText: PropTypes.func.isRequired,
+  value: PropTypes.string.isRequired,
+  style: ViewPropTypes.style,
+  password: PropTypes.bool,
+  disabled: PropTypes.bool,
+  autoCapitalize: PropTypes.oneOf(['sentences', 'characters', 'words', 'none']),
+  correct: PropTypes.bool,
+};
+
+InputText.defaultProps = {
+  placeholder: 'Enter text...',
+  password: false,
+  disabled: false,
+  autoCapitalize: 'sentences',
+  correct: true,
+};
 
 const styles = StyleSheet.create({
   container: {

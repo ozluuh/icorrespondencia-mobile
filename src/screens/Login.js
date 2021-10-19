@@ -65,6 +65,8 @@ export default function Login({ navigation }) {
         style={{ marginBottom: 15 }}
         value={username}
         onChangeText={e => setUsername(e.trim())}
+        autoCapitalize="none"
+        autoCorrect={false}
       />
       <InputText
         placeholder="Senha"
