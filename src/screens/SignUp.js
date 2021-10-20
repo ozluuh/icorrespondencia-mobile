@@ -11,7 +11,7 @@ import { ALWAYS_LOGGED_KEY, USER_PUBLIC_ID_LOGGED_KEY } from '../config/keys';
 import { UserContext } from '../context/UserContext';
 import { createUser, getTownhouseByPublicId, getTownhouses } from '../utils/api';
 import { showMessage } from '../utils/message';
-import { store } from '../utils/storage';
+import { storeOrUpdate } from '../utils/storage';
 
 export default function SignUp({ navigation }) {
   const [name, setName] = useState('');
@@ -64,7 +64,9 @@ export default function SignUp({ navigation }) {
 
       response.blocks.map(b =>
         b.rooms.map(r =>
-          parsedResponse.push(Object.assign({}, { label: `${r.number} - ${b.name}`, value: r.id, number: r.number }))
+          parsedResponse.push(
+            Object.assign({}, { label: `${r.number} - ${b.name}`, value: r.id, number: r.number })
+          )
         )
       );
 
@@ -74,6 +76,16 @@ export default function SignUp({ navigation }) {
 
     fetchRooms();
   }, [selectedTownhouse]);
+
+  const reset = () => {
+    setAlwaysLogged(false);
+    setName('');
+    setEmail('');
+    setUsername('');
+    setPassword('');
+    setSelectedTownhouse();
+    setSelectedRoom();
+  };
 
   const validation = () => {
     if (name.trim().length === 0) {
@@ -111,16 +123,22 @@ export default function SignUp({ navigation }) {
     try {
       response = await createUser(newUser);
 
-      response.role.room["number"] = rooms.filter(item => item.value === selectedRoom)[0].number;
-      response.role.townhouse = townhouses.filter(item => item.value === selectedTownhouse)[0].townhouse;
+      response.role.room['number'] = rooms.filter(item => item.value === selectedRoom)[0].number;
+      response.role.townhouse = townhouses.filter(
+        item => item.value === selectedTownhouse
+      )[0].townhouse;
 
       context.setUser(response);
 
       if (alwaysLogged) {
-        store(ALWAYS_LOGGED_KEY, true);
-        store(USER_PUBLIC_ID_LOGGED_KEY, response.public_id);
-        store(response.public_id, response);
+        storeOrUpdate(ALWAYS_LOGGED_KEY, true);
+        storeOrUpdate(USER_PUBLIC_ID_LOGGED_KEY, response.public_id);
+        storeOrUpdate(response.public_id, response);
+      } else {
+        storeOrUpdate(ALWAYS_LOGGED_KEY, false);
       }
+
+      reset();
 
       navigation.navigate('Home');
     } catch (error) {

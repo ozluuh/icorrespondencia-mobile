@@ -9,7 +9,7 @@ import { ALWAYS_LOGGED_KEY, USER_PUBLIC_ID_LOGGED_KEY } from '../config/keys';
 import { UserContext } from '../context/UserContext';
 import { getUserByUsernameAndPassword } from '../utils/api';
 import { showMessage } from '../utils/message';
-import { store } from '../utils/storage';
+import { storeOrUpdate } from '../utils/storage';
 
 export default function Login({ navigation }) {
   const [alwaysLogged, setAlwaysLogged] = useState(false);
@@ -45,9 +45,11 @@ export default function Login({ navigation }) {
       context.setUser(user);
 
       if (alwaysLogged) {
-        store(ALWAYS_LOGGED_KEY, true);
-        store(USER_PUBLIC_ID_LOGGED_KEY, user.public_id);
-        store(user.public_id, user);
+        storeOrUpdate(ALWAYS_LOGGED_KEY, true);
+        storeOrUpdate(USER_PUBLIC_ID_LOGGED_KEY, user.public_id);
+        storeOrUpdate(user.public_id, user);
+      } else {
+        storeOrUpdate(ALWAYS_LOGGED_KEY, false);
       }
 
       resetFields();

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
 import CheckBox from 'react-native-check-box';
 
 import Button from '../components/Button';
@@ -17,10 +17,13 @@ export default function Profile({ navigation }) {
   const [password, setPassword] = useState('');
   const [alwaysLogged, setAlwaysLogged] = useState(false);
   const [user, setUser] = useState({});
+  const [isLoading, setLoading] = useState(false);
 
   const context = useContext(UserContext);
 
   useEffect(() => {
+    setLoading(true);
+
     async function fetchUser() {
       const u = context.user;
 
@@ -35,6 +38,8 @@ export default function Profile({ navigation }) {
       if (isLogged) {
         setAlwaysLogged(u.alwaysLogged);
       }
+
+      setLoading(prev => !prev);
     }
 
     fetchUser();
@@ -66,10 +71,21 @@ export default function Profile({ navigation }) {
     if (alwaysLogged) {
       await storeOrUpdate(user.public_id, updated);
       await storeOrUpdate(USER_PUBLIC_ID_LOGGED_KEY, user.public_id);
+      await storeOrUpdate(ALWAYS_LOGGED_KEY, true);
+    } else {
+      await storeOrUpdate(ALWAYS_LOGGED_KEY, false);
     }
 
     navigation.goBack();
   };
+
+  if (isLoading) {
+    return (
+      <Layout style={{ justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#000" />
+      </Layout>
+    );
+  }
 
   return (
     <Layout style={{ justifyContent: 'center', paddingHorizontal: 12 }}>
