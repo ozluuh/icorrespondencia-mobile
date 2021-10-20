@@ -48,8 +48,6 @@ export default function Login({ navigation }) {
         storeOrUpdate(ALWAYS_LOGGED_KEY, true);
         storeOrUpdate(USER_PUBLIC_ID_LOGGED_KEY, user.public_id);
         storeOrUpdate(user.public_id, user);
-      } else {
-        storeOrUpdate(ALWAYS_LOGGED_KEY, false);
       }
 
       resetFields();
@@ -75,9 +73,10 @@ export default function Login({ navigation }) {
         password
         value={password}
         onChangeText={e => setPassword(e.trim())}
+        style={{ marginBottom: 15 }}
       />
       <CheckBox
-        style={{ paddingVertical: 20 }}
+        style={{ paddingVertical: 20, display: 'none' }}
         onClick={() => setAlwaysLogged(prev => !prev)}
         isChecked={alwaysLogged}
         rightText={'Manter conectado'}

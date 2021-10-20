@@ -72,8 +72,6 @@ export default function Profile({ navigation }) {
       await storeOrUpdate(user.public_id, updated);
       await storeOrUpdate(USER_PUBLIC_ID_LOGGED_KEY, user.public_id);
       await storeOrUpdate(ALWAYS_LOGGED_KEY, true);
-    } else {
-      await storeOrUpdate(ALWAYS_LOGGED_KEY, false);
     }
 
     navigation.goBack();
@@ -128,7 +126,7 @@ export default function Profile({ navigation }) {
         disabled
       />
       <CheckBox
-        style={{ marginBottom: 15 }}
+        style={{ marginBottom: 15, display: 'none' }}
         onClick={() => setAlwaysLogged(!alwaysLogged)}
         isChecked={alwaysLogged}
         rightText={'Manter conectado'}

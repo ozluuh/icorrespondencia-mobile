@@ -134,8 +134,6 @@ export default function SignUp({ navigation }) {
         storeOrUpdate(ALWAYS_LOGGED_KEY, true);
         storeOrUpdate(USER_PUBLIC_ID_LOGGED_KEY, response.public_id);
         storeOrUpdate(response.public_id, response);
-      } else {
-        storeOrUpdate(ALWAYS_LOGGED_KEY, false);
       }
 
       reset();
@@ -200,7 +198,7 @@ export default function SignUp({ navigation }) {
         />
       )}
       <CheckBox
-        style={{ marginBottom: 10 }}
+        style={{ marginBottom: 10, display: 'none' }}
         onClick={() => setAlwaysLogged(prev => !prev)}
         isChecked={alwaysLogged}
         rightText={'Manter conectado'}
