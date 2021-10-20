@@ -1,5 +1,5 @@
-const IP = '192.168.0.73';
-const BASE_URL = `http://${IP}:8080/api`;
+const SERVER = 'app-icorrespondencia.azurewebsites.net';
+const BASE_URL = `https://${SERVER}/api`;
 const USER_URL = `${BASE_URL}/users`;
 const REGISTERED_USER_URL = `${BASE_URL}/users/validation`;
 const TOWNHOUSE_URL = `${BASE_URL}/townhouses`;

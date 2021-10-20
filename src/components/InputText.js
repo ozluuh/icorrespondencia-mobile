@@ -31,7 +31,7 @@ export default function InputText({
 InputText.propTypes = {
   placeholder: PropTypes.string,
   onChangeText: PropTypes.func,
-  value: PropTypes.string.isRequired,
+  value: PropTypes.string,
   style: ViewPropTypes.style,
   password: PropTypes.bool,
   disabled: PropTypes.bool,
@@ -45,6 +45,7 @@ InputText.defaultProps = {
   disabled: false,
   autoCapitalize: 'sentences',
   correct: true,
+  value: '',
 };
 
 const styles = StyleSheet.create({
