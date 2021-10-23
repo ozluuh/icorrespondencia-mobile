@@ -1,5 +1,5 @@
-const SERVER = 'app-icorrespondencia.azurewebsites.net';
-const BASE_URL = `https://${SERVER}/api`;
+const SERVER = 'icorrespondencia.azurewebsites.net';
+const BASE_URL = `https://${SERVER}`;
 const USER_URL = `${BASE_URL}/users`;
 const REGISTERED_USER_URL = `${BASE_URL}/users/validation`;
 const TOWNHOUSE_URL = `${BASE_URL}/townhouses`;
