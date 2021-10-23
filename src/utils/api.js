@@ -145,6 +145,7 @@ export const updateUser = async user => {
  * @property {string} deliveryDate
  * @property {boolean} read
  * @property {string} description
+ * @property {string} type
  * @property {string} read_at
  */
 /**

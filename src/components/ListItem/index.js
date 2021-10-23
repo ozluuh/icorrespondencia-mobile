@@ -23,7 +23,7 @@ export default function ListItem({ item, handleLeftOpen }) {
   return (
     <Swipeable renderLeftActions={LeftActions} onSwipeableLeftOpen={handleLeftOpen}>
       <View style={styles.container}>
-        <Text style={styles.text}>{item.description}</Text>
+        <Text style={styles.text}>{item.type}</Text>
         <Text style={styles.text}>{parseDate(item.deliveryDate)}</Text>
       </View>
     </Swipeable>
@@ -32,7 +32,7 @@ export default function ListItem({ item, handleLeftOpen }) {
 
 ListItem.propTypes = {
   item: PropTypes.shape({
-    description: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
     deliveryDate: PropTypes.string.isRequired,
   }),
   handleLeftOpen: PropTypes.func,
