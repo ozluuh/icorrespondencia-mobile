@@ -23,6 +23,7 @@ export default function InputText({
         editable={!disabled}
         autoCapitalize={autoCapitalize}
         autoCorrect={correct}
+        placeholderTextColor="#999"
       />
     </View>
   );

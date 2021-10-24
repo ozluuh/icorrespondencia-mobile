@@ -32,7 +32,7 @@ export default function ListItem({ item, handleLeftOpen }) {
 
 ListItem.propTypes = {
   item: PropTypes.shape({
-    type: PropTypes.string.isRequired,
+    type: PropTypes.string,
     deliveryDate: PropTypes.string.isRequired,
   }),
   handleLeftOpen: PropTypes.func,
