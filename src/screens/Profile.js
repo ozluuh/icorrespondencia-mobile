@@ -132,7 +132,19 @@ export default function Profile({ navigation }) {
         rightText={'Manter conectado'}
       />
       <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-        <Button title="Atualizar" style={{ marginRight: 10, flex: 1 }} onPress={update} />
+        <Button
+          title="Atualizar"
+          style={{ marginRight: 10, flex: 1 }}
+          textColor="#fff"
+          onPress={update}
+        />
+        <Button
+          title="Sair"
+          style={{ marginRight: 10, flex: 1 }}
+          backgroundColor="#FF474E"
+          textColor="#fff"
+          onPress={navigation.popToTop}
+        />
       </View>
     </Layout>
   );
