@@ -29,7 +29,7 @@ export default function Home() {
     async function fetchMailings() {
       const response = await getMailings(context.user.public_id);
 
-      const day = new Date().getDate();
+      const day = new Date().getUTCDate();
       const month = new Date().getMonth();
       let dayAmount = 0,
         monthAmount = 0;
@@ -37,7 +37,7 @@ export default function Home() {
       response.forEach(item => {
         const delivery = new Date(item.deliveryDate);
 
-        if (delivery.getDate() === day) {
+        if (delivery.getUTCDate() === day) {
           dayAmount++;
         }
 
@@ -45,8 +45,6 @@ export default function Home() {
           monthAmount++;
         }
       });
-
-      console.log(dayAmount);
 
       setMailingDay(dayAmount);
       setMailingMonth(monthAmount);
