@@ -23,7 +23,7 @@ export default function ListItem({ item, handleLeftOpen }) {
   return (
     <Swipeable renderLeftActions={LeftActions} onSwipeableLeftOpen={handleLeftOpen}>
       <View style={styles.container}>
-        <Text style={styles.text}>{item.type}</Text>
+        <Text style={styles.text}>{item?.type || 'Outros'}</Text>
         <Text style={styles.text}>{parseDate(item.deliveryDate)}</Text>
       </View>
     </Swipeable>
